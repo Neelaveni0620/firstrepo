@@ -1,0 +1,22 @@
+pipeline{
+    agent any 
+    stages{
+        stage('checkout'){
+            steps{
+          git branch: 'main', url: 'https://github.com/Neelaveni0620/firstrepo.git'                    }
+        }
+         stage('dev'){
+            steps{
+                sh 'mvn package'
+            }
+        }
+         stage('prod'){
+            steps{
+            sshagent(['sshagentpipe']) {
+
+            sh 'scp -o StrictHostKeyChecking=false target/firstrepo.war ec2-user@13.238.218.116:/opt/apache-tomcat-9.0.74/webapps/'
+             }
+           }
+        }
+    }
+}
